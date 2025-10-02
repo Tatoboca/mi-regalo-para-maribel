@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Mi Libro Virtual</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+    
+    .book-container {
+      width: 100%;
+      max-width: 1200px;
+      text-align: center;
+    }
+    
+    h1 {
+      color: #333;
+      margin-bottom: 20px;
+      font-size: 2.5em;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .book {
+      width: 90vw;
+      height: 70vh;
+      max-width: 900px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 15px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+      touch-action: pan-y;
+    }
+    
+    .page {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: none;
+      background: white;
+    }
+    
+    .page.active {
+      display: block;
+    }
+    
+    .page img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+    
+    .controls {
+      margin-top: 30px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .btn {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      font-size: 18px;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    
+    .btn:hover {
+      background: #45a049;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    }
+    
+    .btn:disabled {
+      background: #cccccc;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    .music-controls {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    
+    .music-btn {
+      background: #2196F3;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      font-size: 16px;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .music-btn:hover {
+      background: #1976D2;
+      transform: scale(1.05);
+    }
+    
+    .page-counter {
+      margin-top: 15px;
+      font-size: 18px;
+      color: #333;
+      font-weight: bold;
+    }
+    
+    /* Efectos de transición */
+    .page.fade-out {
+      animation: fadeOut 0.5s ease-in-out;
+    }
+    
+    .page.fade-in {
+      animation: fadeIn 0.5s ease-in-out;
+    }
+    
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .book {
+        height: 60vh;
+        width: 95vw;
+      }
+      
+      h1 {
+        font-size: 2em;
+      }
+      
+      .btn {
+        padding: 12px 25px;
+        font-size: 16px;
+      }
+      
+      .music-btn {
+        padding: 10px 20px;
+        font-size: 14px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .book {
+        height: 50vh;
+      }
+      
+      .controls {
+        gap: 10px;
+      }
+      
+      .btn {
+        padding: 10px 20px;
+        font-size: 14px;
+      }
+    }
+
+    /* Corazones decorativos */
+    .heart {
+      position: fixed;
+      width: 20px;
+      height: 20px;
+      background: #ff6b6b;
+      transform: rotate(45deg);
+      opacity: 0.7;
+      pointer-events: none;
+      z-index: 1000;
+    }
+    
+    .heart::before,
+    .heart::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: #ff6b6b;
+      border-radius: 50%;
+    }
+    
+    .heart::before {
+      top: -10px;
+      left: 0;
+    }
+    
+    .heart::after {
+      left: 10px;
+      top: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="book-container">
+    <h1>📖 Mi Libro Virtual</h1>
+    
+    <div class="book" id="book">
+      <!-- Páginas con imágenes -->
+      <div class="page active" id="page1">
+        <img src="PORT.jpg" alt="Portada del libro" onerror="this.src='https://picsum.photos/800/600?random=1'">
+      </div>
+      
+      <div class="page" id="page2">
+        <img src="P1.jpg" alt="Página 1" onerror="this.src='https://picsum.photos/800/600?random=2'">
+      </div>
+      
+      <div class="page" id="page3">
+        <img src="P2.jpg" alt="Página 2" onerror="this.src='https://picsum.photos/800/600?random=3'">
+      </div>
+      
+      <div class="page" id="page4">
+        <img src="P3.jpg" alt="Página 3" onerror="this.src='https://picsum.photos/800/600?random=4'">
+      </div>
+      
+      <div class="page" id="page5">
+        <img src="P4.jpg" alt="Página 4" onerror="this.src='https://picsum.photos/800/600?random=5'">
+      </div>
+      
+      <div class="page" id="page6">
+        <img src="P5.jpg" alt="Página 5" onerror="this.src='https://picsum.photos/800/600?random=6'">
+      </div>
+      
+      <div class="page" id="page7">
+        <img src="P6.jpg" alt="Página 6" onerror="this.src='https://picsum.photos/800/600?random=7'">
+      </div>
+      
+      <div class="page" id="page8">
+        <img src="P7.jpg" alt="Página 7" onerror="this.src='https://picsum.photos/800/600?random=8'">
+      </div>
+      
+      <div class="page" id="page9">
+        <img src="P8.jpg" alt="Página 8" onerror="this.src='https://picsum.photos/800/600?random=9'">
+      </div>
+      
+      <div class="page" id="page10">
+        <img src="P9.jpg" alt="Página 9" onerror="this.src='https://picsum.photos/800/600?random=10'">
+      </div>
+      
+      <div class="page" id="page11">
+        <img src="P10.jpg" alt="Página 10" onerror="this.src='https://picsum.photos/800/600?random=11'">
+      </div>
+      
+      <div class="page" id="page12">
+        <img src="P11.jpg" alt="Página 11" onerror="this.src='https://picsum.photos/800/600?random=12'">
+      </div>
+      
+      <div class="page" id="page13">
+        <img src="P12.jpg" alt="Página 12" onerror="this.src='https://picsum.photos/800/600?random=13'">
+      </div>
+      
+      <div class="page" id="page14">
+        <img src="P13.jpg" alt="Página 13" onerror="this.src='https://picsum.photos/800/600?random=14'">
+      </div>
+      
+      <div class="page" id="page15">
+        <img src="P14.jpg" alt="Página 14" onerror="this.src='https://picsum.photos/800/600?random=15'">
+      </div>
+      
+      <div class="page" id="page16">
+        <img src="P15.jpg" alt="Página 15" onerror="this.src='https://picsum.photos/800/600?random=16'">
+      </div>
+      
+      <div class="page" id="page17">
+        <img src="P16.jpg" alt="Página 16" onerror="this.src='https://picsum.photos/800/600?random=17'">
+      </div>
+      
+      <div class="page" id="page18">
+        <img src="CONT.jpg" alt="Contraportada" onerror="this.src='https://picsum.photos/800/600?random=18'">
+      </div>
+    </div>
+
+    <div class="page-counter">
+      Página <span id="currentPage">1</span> de 18
+    </div>
+
+    <div class="controls">
+      <button class="btn" onclick="previousPage()" id="prevBtn">← Anterior</button>
+      <button class="btn" onclick="nextPage()" id="nextBtn">Siguiente →</button>
+    </div>
+
+    <div class="music-controls">
+      <button class="music-btn" onclick="playMusic()" id="playBtn">🎵 Reproducir Música</button>
+      <button class="music-btn" onclick="pauseMusic()" id="pauseBtn">⏸️ Pausar</button>
+      <button class="music-btn" onclick="nextSong()" id="nextSongBtn">⏭️ Siguiente Canción</button>
+    </div>
+  </div>
+
+  <!-- Elementos de audio -->
+  <audio id="backgroundMusic" loop>
+    <source src="C1.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    // Variables globales
+    let currentPage = 1;
+    const totalPages = 18;
+    let currentSongIndex = 0;
+    const songs = ['C1.mp3', 'C2.mp3', 'C3.mp3', 'C4.mp3', 'C5.mp3', 'C6.mp3', 'C7.mp3', 'C8.mp3', 'C9.mp3', 'C10.mp3'];
+    let isPlaying = false;
+
+    // Inicialización
+    function init() {
+      updateButtons();
+      createHearts();
+    }
+
+    // Navegación de páginas
+    function showPage(pageNumber) {
+      // Ocultar página actual
+      const currentPageElement = document.getElementById(`page${currentPage}`);
+      if (currentPageElement) {
+        currentPageElement.classList.remove('active');
+        currentPageElement.classList.add('fade-out');
+      }
+
+      // Mostrar nueva página
+      const newPageElement = document.getElementById(`page${pageNumber}`);
+      if (newPageElement) {
+        newPageElement.classList.add('active', 'fade-in');
+        setTimeout(() => {
+          newPageElement.classList.remove('fade-in');
+          if (currentPageElement) {
+            currentPageElement.classList.remove('fade-out');
+          }
+        }, 500);
+      }
+
+      currentPage = pageNumber;
+      document.getElementById('currentPage').textContent = pageNumber;
+      updateButtons();
+    }
+
+    function nextPage() {
+      if (currentPage < totalPages) {
+        showPage(currentPage + 1);
+      }
+    }
+
+    function previousPage() {
+      if (currentPage > 1) {
+        showPage(currentPage - 1);
+      }
+    }
+
+    function updateButtons() {
+      document.getElementById('prevBtn').disabled = currentPage === 1;
+      document.getElementById('nextBtn').disabled = currentPage === totalPages;
+    }
+
+    // Control de música
+    function playMusic() {
+      const audio = document.getElementById('backgroundMusic');
+      if (!isPlaying) {
+        audio.src = songs[currentSongIndex];
+        audio.play().catch(e => console.log('Error al reproducir:', e));
+        isPlaying = true;
+        document.getElementById('playBtn').textContent = '🔊 Reproduciendo';
+      }
+    }
+
+    function pauseMusic() {
+      const audio = document.getElementById('backgroundMusic');
+      audio.pause();
+      isPlaying = false;
+      document.getElementById('playBtn').textContent = '🎵 Reproducir Música';
+    }
+
+    function nextSong() {
+      currentSongIndex = (currentSongIndex + 1) % songs.length;
+      const audio = document.getElementById('backgroundMusic');
+      
+      if (isPlaying) {
+        audio.src = songs[currentSongIndex];
+        audio.play().catch(e => console.log('Error al reproducir:', e));
+      }
+      
+      // Mostrar notificación de cambio de canción
+      showNotification(`Canción ${currentSongIndex + 1} de ${songs.length}`);
+    }
+
+    // Navegación con teclado
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'ArrowRight') {
+        nextPage();
+      } else if (event.key === 'ArrowLeft') {
+        previousPage();
+      } else if (event.key === ' ') {
+        event.preventDefault();
+        if (isPlaying) {
+          pauseMusic();
+        } else {
+          playMusic();
+        }
+      }
+    });
+
+    // Navegación táctil
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    document.getElementById('book').addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+
+    document.getElementById('book').addEventListener('touchend', e => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    });
+
+    function handleSwipe() {
+      const swipeThreshold = 50;
+      const difference = touchStartX - touchEndX;
+
+      if (Math.abs(difference) > swipeThreshold) {
+        if (difference > 0) {
+          nextPage(); // Swipe izquierda
+        } else {
+          previousPage(); // Swipe derecha
+        }
+      }
+    }
+
+    // Efectos decorativos
+    function createHearts() {
+      setInterval(() => {
+        if (Math.random() > 0.7) { // 30% de probabilidad
+          createHeart();
+        }
+      }, 2000);
+    }
+
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+      
+      // Tamaño aleatorio
+      const size = Math.random() * 15 + 10;
+      heart.style.width = `${size}px`;
+      heart.style.height = `${size}px`;
+      
+      // Posición aleatoria
+      heart.style.left = `${Math.random() * 100}vw`;
+      heart.style.top = '-20px';
+      
+      // Color aleatorio
+      const colors = ['#ff6b6b', '#ff9a9e', '#fad0c4', '#ffd6ff', '#c9ada7'];
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      heart.style.background = color;
+      heart.style.setProperty('--heart-color', color);
+      
+      // Animación
+      heart.style.animation = `fall ${Math.random() * 3 + 2}s linear forwards`;
+      
+      document.body.appendChild(heart);
+      
+      // Remover después de la animación
+      setTimeout(() => {
+        if (heart.parentNode) {
+          heart.parentNode.removeChild(heart);
+        }
+      }, 5000);
+    }
+
+    // Estilos para la animación de caída
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes fall {
+        to {
+          transform: translateY(100vh) rotate(45deg);
+          opacity: 0;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Notificaciones
+    function showNotification(message) {
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #4CAF50;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 5px;
+        z-index: 10000;
+        animation: slideIn 0.3s ease-out;
+      `;
+      notification.textContent = message;
+      
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease-in forwards';
+        setTimeout(() => {
+          if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+          }
+        }, 300);
+      }, 2000);
+    }
+
+    // Estilos para notificaciones
+    const notificationStyle = document.createElement('style');
+    notificationStyle.textContent = `
+      @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+      @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+      }
+    `;
+    document.head.appendChild(notificationStyle);
+
+    // Inicializar cuando se carga la página
+    window.addEventListener('load', init);
+  </script>
+</body>
+</html>
