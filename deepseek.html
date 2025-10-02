@@ -2,8 +2,8 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Mi Libro Virtual</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Para Maribel - Mi Regalo Especial</title>
   <style>
     * {
       margin: 0;
@@ -19,17 +19,16 @@
       align-items: center;
       min-height: 100vh;
       padding: 20px;
-      overflow-x: hidden;
     }
     
     .book-container {
-      width: 100%;
-      max-width: 1200px;
       text-align: center;
+      width: 100%;
+      max-width: 1000px;
     }
     
     h1 {
-      color: #333;
+      color: #d63384;
       margin-bottom: 20px;
       font-size: 2.5em;
       text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
@@ -38,14 +37,13 @@
     .book {
       width: 90vw;
       height: 70vh;
-      max-width: 900px;
+      max-width: 800px;
       margin: 0 auto;
-      background: #fff;
+      background: white;
       border-radius: 15px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
       position: relative;
       overflow: hidden;
-      touch-action: pan-y;
     }
     
     .page {
@@ -55,11 +53,11 @@
       width: 100%;
       height: 100%;
       display: none;
-      background: white;
     }
     
     .page.active {
       display: block;
+      animation: fadeIn 0.5s ease-in-out;
     }
     
     .page img {
@@ -70,49 +68,16 @@
     }
     
     .controls {
-      margin-top: 30px;
+      margin: 25px 0;
       display: flex;
       justify-content: center;
+      align-items: center;
       gap: 20px;
       flex-wrap: wrap;
     }
     
     .btn {
-      background: #4CAF50;
-      color: white;
-      border: none;
-      padding: 15px 30px;
-      font-size: 18px;
-      border-radius: 50px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    }
-    
-    .btn:hover {
-      background: #45a049;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-    }
-    
-    .btn:disabled {
-      background: #cccccc;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
-    
-    .music-controls {
-      margin-top: 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 15px;
-      flex-wrap: wrap;
-    }
-    
-    .music-btn {
-      background: #2196F3;
+      background: #d63384;
       color: white;
       border: none;
       padding: 12px 25px;
@@ -120,32 +85,50 @@
       border-radius: 25px;
       cursor: pointer;
       transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(214, 51, 132, 0.3);
     }
     
-    .music-btn:hover {
-      background: #1976D2;
-      transform: scale(1.05);
+    .btn:hover {
+      background: #c22575;
+      transform: translateY(-2px);
     }
     
-    .page-counter {
-      margin-top: 15px;
+    .btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    .page-info {
       font-size: 18px;
       color: #333;
       font-weight: bold;
+      min-width: 120px;
     }
     
-    /* Efectos de transición */
-    .page.fade-out {
-      animation: fadeOut 0.5s ease-in-out;
+    .music-controls {
+      margin: 15px 0;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
     }
     
-    .page.fade-in {
-      animation: fadeIn 0.5s ease-in-out;
+    .music-btn {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
     }
     
-    @keyframes fadeOut {
-      from { opacity: 1; }
-      to { opacity: 0; }
+    .music-btn:hover {
+      background: #45a049;
+      transform: scale(1.05);
     }
     
     @keyframes fadeIn {
@@ -165,149 +148,95 @@
       }
       
       .btn {
-        padding: 12px 25px;
-        font-size: 16px;
-      }
-      
-      .music-btn {
         padding: 10px 20px;
         font-size: 14px;
       }
     }
     
-    @media (max-width: 480px) {
-      .book {
-        height: 50vh;
-      }
-      
-      .controls {
-        gap: 10px;
-      }
-      
-      .btn {
-        padding: 10px 20px;
-        font-size: 14px;
-      }
-    }
-
-    /* Corazones decorativos */
-    .heart {
-      position: fixed;
-      width: 20px;
-      height: 20px;
-      background: #ff6b6b;
-      transform: rotate(45deg);
-      opacity: 0.7;
-      pointer-events: none;
-      z-index: 1000;
+    .loading {
+      color: #666;
+      font-style: italic;
     }
     
-    .heart::before,
-    .heart::after {
-      content: '';
-      position: absolute;
-      width: 20px;
-      height: 20px;
-      background: #ff6b6b;
-      border-radius: 50%;
-    }
-    
-    .heart::before {
-      top: -10px;
-      left: 0;
-    }
-    
-    .heart::after {
-      left: 10px;
-      top: 0;
+    .error-message {
+      color: #dc3545;
+      background: #f8d7da;
+      padding: 10px;
+      border-radius: 5px;
+      margin: 10px 0;
+      display: none;
     }
   </style>
 </head>
 <body>
   <div class="book-container">
-    <h1>📖 Mi Libro Virtual</h1>
+    <h1>💖 Para Maribel 💖</h1>
+    
+    <div id="errorMessage" class="error-message"></div>
     
     <div class="book" id="book">
       <!-- Páginas con imágenes -->
       <div class="page active" id="page1">
-        <img src="PORT.jpg" alt="Portada del libro" onerror="this.src='https://picsum.photos/800/600?random=1'">
+        <img src="PORT.jpg" alt="Portada" onerror="handleImageError(this, 'PORT.jpg')">
       </div>
-      
       <div class="page" id="page2">
-        <img src="P1.jpg" alt="Página 1" onerror="this.src='https://picsum.photos/800/600?random=2'">
+        <img src="P1.jpg" alt="Página 1" onerror="handleImageError(this, 'P1.jpg')">
       </div>
-      
       <div class="page" id="page3">
-        <img src="P2.jpg" alt="Página 2" onerror="this.src='https://picsum.photos/800/600?random=3'">
+        <img src="P2.jpg" alt="Página 2" onerror="handleImageError(this, 'P2.jpg')">
       </div>
-      
       <div class="page" id="page4">
-        <img src="P3.jpg" alt="Página 3" onerror="this.src='https://picsum.photos/800/600?random=4'">
+        <img src="P3.jpg" alt="Página 3" onerror="handleImageError(this, 'P3.jpg')">
       </div>
-      
       <div class="page" id="page5">
-        <img src="P4.jpg" alt="Página 4" onerror="this.src='https://picsum.photos/800/600?random=5'">
+        <img src="P4.jpg" alt="Página 4" onerror="handleImageError(this, 'P4.jpg')">
       </div>
-      
       <div class="page" id="page6">
-        <img src="P5.jpg" alt="Página 5" onerror="this.src='https://picsum.photos/800/600?random=6'">
+        <img src="P5.jpg" alt="Página 5" onerror="handleImageError(this, 'P5.jpg')">
       </div>
-      
       <div class="page" id="page7">
-        <img src="P6.jpg" alt="Página 6" onerror="this.src='https://picsum.photos/800/600?random=7'">
+        <img src="P6.jpg" alt="Página 6" onerror="handleImageError(this, 'P6.jpg')">
       </div>
-      
       <div class="page" id="page8">
-        <img src="P7.jpg" alt="Página 7" onerror="this.src='https://picsum.photos/800/600?random=8'">
+        <img src="P7.jpg" alt="Página 7" onerror="handleImageError(this, 'P7.jpg')">
       </div>
-      
       <div class="page" id="page9">
-        <img src="P8.jpg" alt="Página 8" onerror="this.src='https://picsum.photos/800/600?random=9'">
+        <img src="P8.jpg" alt="Página 8" onerror="handleImageError(this, 'P8.jpg')">
       </div>
-      
       <div class="page" id="page10">
-        <img src="P9.jpg" alt="Página 9" onerror="this.src='https://picsum.photos/800/600?random=10'">
+        <img src="P9.jpg" alt="Página 9" onerror="handleImageError(this, 'P9.jpg')">
       </div>
-      
       <div class="page" id="page11">
-        <img src="P10.jpg" alt="Página 10" onerror="this.src='https://picsum.photos/800/600?random=11'">
+        <img src="P10.jpg" alt="Página 10" onerror="handleImageError(this, 'P10.jpg')">
       </div>
-      
       <div class="page" id="page12">
-        <img src="P11.jpg" alt="Página 11" onerror="this.src='https://picsum.photos/800/600?random=12'">
+        <img src="P11.jpg" alt="Página 11" onerror="handleImageError(this, 'P11.jpg')">
       </div>
-      
       <div class="page" id="page13">
-        <img src="P12.jpg" alt="Página 12" onerror="this.src='https://picsum.photos/800/600?random=13'">
+        <img src="P12.jpg" alt="Página 12" onerror="handleImageError(this, 'P12.jpg')">
       </div>
-      
       <div class="page" id="page14">
-        <img src="P13.jpg" alt="Página 13" onerror="this.src='https://picsum.photos/800/600?random=14'">
+        <img src="P13.jpg" alt="Página 13" onerror="handleImageError(this, 'P13.jpg')">
       </div>
-      
       <div class="page" id="page15">
-        <img src="P14.jpg" alt="Página 14" onerror="this.src='https://picsum.photos/800/600?random=15'">
+        <img src="P14.jpg" alt="Página 14" onerror="handleImageError(this, 'P14.jpg')">
       </div>
-      
       <div class="page" id="page16">
-        <img src="P15.jpg" alt="Página 15" onerror="this.src='https://picsum.photos/800/600?random=16'">
+        <img src="P15.jpg" alt="Página 15" onerror="handleImageError(this, 'P15.jpg')">
       </div>
-      
       <div class="page" id="page17">
-        <img src="P16.jpg" alt="Página 16" onerror="this.src='https://picsum.photos/800/600?random=17'">
+        <img src="P16.jpg" alt="Página 16" onerror="handleImageError(this, 'P16.jpg')">
       </div>
-      
       <div class="page" id="page18">
-        <img src="CONT.jpg" alt="Contraportada" onerror="this.src='https://picsum.photos/800/600?random=18'">
+        <img src="CONT.jpg" alt="Contraportada" onerror="handleImageError(this, 'CONT.jpg')">
       </div>
-    </div>
-
-    <div class="page-counter">
-      Página <span id="currentPage">1</span> de 18
     </div>
 
     <div class="controls">
       <button class="btn" onclick="previousPage()" id="prevBtn">← Anterior</button>
+      <div class="page-info">
+        Página <span id="currentPage">1</span> de 18
+      </div>
       <button class="btn" onclick="nextPage()" id="nextBtn">Siguiente →</button>
     </div>
 
@@ -315,11 +244,11 @@
       <button class="music-btn" onclick="playMusic()" id="playBtn">🎵 Reproducir Música</button>
       <button class="music-btn" onclick="pauseMusic()" id="pauseBtn">⏸️ Pausar</button>
       <button class="music-btn" onclick="nextSong()" id="nextSongBtn">⏭️ Siguiente Canción</button>
+      <div id="songInfo" style="color: #666; font-size: 14px;">Canción 1/10</div>
     </div>
   </div>
 
-  <!-- Elementos de audio -->
-  <audio id="backgroundMusic" loop>
+  <audio id="backgroundMusic">
     <source src="C1.mp3" type="audio/mpeg">
   </audio>
 
@@ -333,34 +262,37 @@
 
     // Inicialización
     function init() {
-      updateButtons();
-      createHearts();
+      console.log('Iniciando libro virtual...');
+      updatePageInfo();
+      checkFiles();
+    }
+
+    // Verificar archivos
+    function checkFiles() {
+      const missingFiles = [];
+      songs.forEach(song => {
+        // Verificaremos cuando intenten reproducirse
+      });
     }
 
     // Navegación de páginas
     function showPage(pageNumber) {
+      if (pageNumber < 1 || pageNumber > totalPages) return;
+      
       // Ocultar página actual
       const currentPageElement = document.getElementById(`page${currentPage}`);
       if (currentPageElement) {
         currentPageElement.classList.remove('active');
-        currentPageElement.classList.add('fade-out');
       }
 
       // Mostrar nueva página
       const newPageElement = document.getElementById(`page${pageNumber}`);
       if (newPageElement) {
-        newPageElement.classList.add('active', 'fade-in');
-        setTimeout(() => {
-          newPageElement.classList.remove('fade-in');
-          if (currentPageElement) {
-            currentPageElement.classList.remove('fade-out');
-          }
-        }, 500);
+        newPageElement.classList.add('active');
       }
 
       currentPage = pageNumber;
-      document.getElementById('currentPage').textContent = pageNumber;
-      updateButtons();
+      updatePageInfo();
     }
 
     function nextPage() {
@@ -375,7 +307,8 @@
       }
     }
 
-    function updateButtons() {
+    function updatePageInfo() {
+      document.getElementById('currentPage').textContent = currentPage;
       document.getElementById('prevBtn').disabled = currentPage === 1;
       document.getElementById('nextBtn').disabled = currentPage === totalPages;
     }
@@ -383,12 +316,20 @@
     // Control de música
     function playMusic() {
       const audio = document.getElementById('backgroundMusic');
-      if (!isPlaying) {
-        audio.src = songs[currentSongIndex];
-        audio.play().catch(e => console.log('Error al reproducir:', e));
+      const songToPlay = songs[currentSongIndex];
+      
+      console.log('Intentando reproducir:', songToPlay);
+      
+      audio.src = songToPlay;
+      audio.play().then(() => {
         isPlaying = true;
         document.getElementById('playBtn').textContent = '🔊 Reproduciendo';
-      }
+        updateSongInfo();
+        hideError();
+      }).catch(error => {
+        console.error('Error al reproducir:', error);
+        showError(`No se pudo cargar la canción: ${songToPlay}. Verifica que el archivo esté en el repositorio.`);
+      });
     }
 
     function pauseMusic() {
@@ -400,15 +341,41 @@
 
     function nextSong() {
       currentSongIndex = (currentSongIndex + 1) % songs.length;
-      const audio = document.getElementById('backgroundMusic');
+      updateSongInfo();
       
       if (isPlaying) {
-        audio.src = songs[currentSongIndex];
-        audio.play().catch(e => console.log('Error al reproducir:', e));
+        playMusic();
       }
+    }
+
+    function updateSongInfo() {
+      document.getElementById('songInfo').textContent = 
+        `Canción ${currentSongIndex + 1}/${songs.length}`;
+    }
+
+    // Manejo de errores
+    function handleImageError(img, filename) {
+      console.error('Error cargando imagen:', filename);
+      img.alt = `Imagen no disponible: ${filename}`;
+      img.style.backgroundColor = '#f8f9fa';
+      img.style.display = 'flex';
+      img.style.alignItems = 'center';
+      img.style.justifyContent = 'center';
+      img.style.fontSize = '16px';
+      img.style.color = '#666';
+      img.innerHTML = `❌ ${filename}<br><small>No encontrada</small>`;
       
-      // Mostrar notificación de cambio de canción
-      showNotification(`Canción ${currentSongIndex + 1} de ${songs.length}`);
+      showError(`La imagen ${filename} no se encontró. Verifica que esté en el repositorio.`);
+    }
+
+    function showError(message) {
+      const errorDiv = document.getElementById('errorMessage');
+      errorDiv.textContent = message;
+      errorDiv.style.display = 'block';
+    }
+
+    function hideError() {
+      document.getElementById('errorMessage').style.display = 'none';
     }
 
     // Navegación con teclado
@@ -429,124 +396,25 @@
 
     // Navegación táctil
     let touchStartX = 0;
-    let touchEndX = 0;
+    const bookElement = document.getElementById('book');
 
-    document.getElementById('book').addEventListener('touchstart', e => {
+    bookElement.addEventListener('touchstart', e => {
       touchStartX = e.changedTouches[0].screenX;
     });
 
-    document.getElementById('book').addEventListener('touchend', e => {
-      touchEndX = e.changedTouches[0].screenX;
-      handleSwipe();
-    });
-
-    function handleSwipe() {
-      const swipeThreshold = 50;
+    bookElement.addEventListener('touchend', e => {
+      const touchEndX = e.changedTouches[0].screenX;
       const difference = touchStartX - touchEndX;
+      const swipeThreshold = 50;
 
       if (Math.abs(difference) > swipeThreshold) {
         if (difference > 0) {
-          nextPage(); // Swipe izquierda
+          nextPage();
         } else {
-          previousPage(); // Swipe derecha
+          previousPage();
         }
       }
-    }
-
-    // Efectos decorativos
-    function createHearts() {
-      setInterval(() => {
-        if (Math.random() > 0.7) { // 30% de probabilidad
-          createHeart();
-        }
-      }, 2000);
-    }
-
-    function createHeart() {
-      const heart = document.createElement('div');
-      heart.className = 'heart';
-      
-      // Tamaño aleatorio
-      const size = Math.random() * 15 + 10;
-      heart.style.width = `${size}px`;
-      heart.style.height = `${size}px`;
-      
-      // Posición aleatoria
-      heart.style.left = `${Math.random() * 100}vw`;
-      heart.style.top = '-20px';
-      
-      // Color aleatorio
-      const colors = ['#ff6b6b', '#ff9a9e', '#fad0c4', '#ffd6ff', '#c9ada7'];
-      const color = colors[Math.floor(Math.random() * colors.length)];
-      heart.style.background = color;
-      heart.style.setProperty('--heart-color', color);
-      
-      // Animación
-      heart.style.animation = `fall ${Math.random() * 3 + 2}s linear forwards`;
-      
-      document.body.appendChild(heart);
-      
-      // Remover después de la animación
-      setTimeout(() => {
-        if (heart.parentNode) {
-          heart.parentNode.removeChild(heart);
-        }
-      }, 5000);
-    }
-
-    // Estilos para la animación de caída
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes fall {
-        to {
-          transform: translateY(100vh) rotate(45deg);
-          opacity: 0;
-        }
-      }
-    `;
-    document.head.appendChild(style);
-
-    // Notificaciones
-    function showNotification(message) {
-      const notification = document.createElement('div');
-      notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: #4CAF50;
-        color: white;
-        padding: 15px 25px;
-        border-radius: 5px;
-        z-index: 10000;
-        animation: slideIn 0.3s ease-out;
-      `;
-      notification.textContent = message;
-      
-      document.body.appendChild(notification);
-      
-      setTimeout(() => {
-        notification.style.animation = 'slideOut 0.3s ease-in forwards';
-        setTimeout(() => {
-          if (notification.parentNode) {
-            notification.parentNode.removeChild(notification);
-          }
-        }, 300);
-      }, 2000);
-    }
-
-    // Estilos para notificaciones
-    const notificationStyle = document.createElement('style');
-    notificationStyle.textContent = `
-      @keyframes slideIn {
-        from { transform: translateX(100%); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-      }
-      @keyframes slideOut {
-        from { transform: translateX(0); opacity: 1; }
-        to { transform: translateX(100%); opacity: 0; }
-      }
-    `;
-    document.head.appendChild(notificationStyle);
+    });
 
     // Inicializar cuando se carga la página
     window.addEventListener('load', init);
