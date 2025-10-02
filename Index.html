@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Maribel 💖</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: pink;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .libro {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .pagina {
+            display: none;
+        }
+        .pagina.activa {
+            display: block;
+        }
+        .pagina img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+        .controles {
+            margin: 20px 0;
+        }
+        button {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #ff5252;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="libro">
+        <h1>💖 Para Maribel 💖</h1>
+        
+        <div id="pagina1" class="pagina activa">
+            <img src="PORT.jpg" alt="Portada">
+        </div>
+        <div id="pagina2" class="pagina">
+            <img src="P1.jpg" alt="Página 1">
+        </div>
+        <div id="pagina3" class="pagina">
+            <img src="P2.jpg" alt="Página 2">
+        </div>
+        <div id="pagina4" class="pagina">
+            <img src="P3.jpg" alt="Página 3">
+        </div>
+        <div id="pagina5" class="pagina">
+            <img src="P4.jpg" alt="Página 4">
+        </div>
+        <div id="pagina6" class="pagina">
+            <img src="P5.jpg" alt="Página 5">
+        </div>
+        <div id="pagina7" class="pagina">
+            <img src="P6.jpg" alt="Página 6">
+        </div>
+        <div id="pagina8" class="pagina">
+            <img src="P7.jpg" alt="Página 7">
+        </div>
+        <div id="pagina9" class="pagina">
+            <img src="P8.jpg" alt="Página 8">
+        </div>
+        <div id="pagina10" class="pagina">
+            <img src="P9.jpg" alt="Página 9">
+        </div>
+        <div id="pagina11" class="pagina">
+            <img src="P10.jpg" alt="Página 10">
+        </div>
+        <div id="pagina12" class="pagina">
+            <img src="P11.jpg" alt="Página 11">
+        </div>
+        <div id="pagina13" class="pagina">
+            <img src="P12.jpg" alt="Página 12">
+        </div>
+        <div id="pagina14" class="pagina">
+            <img src="P13.jpg" alt="Página 13">
+        </div>
+        <div id="pagina15" class="pagina">
+            <img src="P14.jpg" alt="Página 14">
+        </div>
+        <div id="pagina16" class="pagina">
+            <img src="P15.jpg" alt="Página 15">
+        </div>
+        <div id="pagina17" class="pagina">
+            <img src="P16.jpg" alt="Página 16">
+        </div>
+        <div id="pagina18" class="pagina">
+            <img src="CONT.jpg" alt="Contraportada">
+        </div>
+
+        <div class="controles">
+            <button onclick="anterior()" id="btnAnterior">← Anterior</button>
+            <span id="infoPagina">Página 1 de 18</span>
+            <button onclick="siguiente()" id="btnSiguiente">Siguiente →</button>
+        </div>
+
+        <div style="margin: 15px 0;">
+            <button onclick="reproducirMusica()">🎵 Música</button>
+            <button onclick="pausarMusica()">⏸️ Pausar</button>
+        </div>
+    </div>
+
+    <audio id="musica" src="C1.mp3"></audio>
+
+    <script>
+        let paginaActual = 1;
+        const totalPaginas = 18;
+
+        function mostrarPagina(numero) {
+            // Ocultar todas
+            document.querySelectorAll('.pagina').forEach(pagina => {
+                pagina.classList.remove('activa');
+            });
+            
+            // Mostrar actual
+            document.getElementById('pagina' + numero).classList.add('activa');
+            
+            // Actualizar controles
+            document.getElementById('infoPagina').textContent = `Página ${numero} de ${totalPaginas}`;
+            document.getElementById('btnAnterior').disabled = numero === 1;
+            document.getElementById('btnSiguiente').disabled = numero === totalPaginas;
+        }
+
+        function siguiente() {
+            if (paginaActual < totalPaginas) {
+                paginaActual++;
+                mostrarPagina(paginaActual);
+            }
+        }
+
+        function anterior() {
+            if (paginaActual > 1) {
+                paginaActual--;
+                mostrarPagina(paginaActual);
+            }
+        }
+
+        function reproducirMusica() {
+            document.getElementById('musica').play();
+        }
+
+        function pausarMusica() {
+            document.getElementById('musica').pause();
+        }
+
+        // Navegación con teclado
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowRight') siguiente();
+            if (event.key === 'ArrowLeft') anterior();
+        });
+
+        // Iniciar
+        mostrarPagina(1);
+    </script>
+</body>
+</html>
